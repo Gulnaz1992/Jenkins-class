@@ -42,23 +42,24 @@ def slavePodTemplate = """
 
           stage("Checkout SCM") {
               checkout scm
+              gitCommitHash = sh(returnStdout: true, script: 'git rev-parse --short HEAD').trim()
           }
 
           dir('deployments/docker') {
             container('docker') {
-                stage('Docker Build') {
-                    sh 'docker build -t artemis .'
+                withCredentials([usernamePassword(credentialsId: 'docker-creds', passwordVariable: 'PASSWORD', usernameVariable: 'USERNAME')]) {
+                    stage('Docker Build') {
+                        sh 'docker build -t artemis .'
+                    }
+                    stage('Docker Login') {
+                        sh "docker login --username  $USERNAME  --password $PASSWORD " 
+                    }
+                    stage('Docker Push') {
+                        sh 'docker tag  artemis fsadykov/artemis'
+                        sh 'docker push fsadykov/artemis'
+                    }
                 }
-
-                stage('Docker Push') {
-                    
-
-                }
-
-            }
-            stage('checking') {
-                sh 'ls -l'
             }
         }
       }
-    }  
+    }   
