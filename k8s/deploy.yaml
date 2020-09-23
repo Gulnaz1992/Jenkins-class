@@ -15,7 +15,7 @@ spec:
         run: artemis-deploy
     spec:
       containers:
-      - image: fsadykov/artemis:latest
+      - image: gulnazkk/artemis:latest
         name: artemis-deploy
         ports:
         - containerPort: 5000
