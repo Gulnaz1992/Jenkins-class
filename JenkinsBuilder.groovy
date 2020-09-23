@@ -65,7 +65,7 @@ def slavePodTemplate = """
             hostPath:
               path: /var/run/docker.sock
     """
-    podTemplate(name: k8slabel, label: k8slabel, yaml: slavePodTemplate, showRawYaml: false) {
+podTemplate(name: k8slabel, label: k8slabel, yaml: slavePodTemplate, showRawYaml: false) {
       node(k8slabel) {
 
           stage("Checkout SCM") {
@@ -100,11 +100,9 @@ def slavePodTemplate = """
                         booleanParam(name: 'applyChanges', value: true), 
                         booleanParam(name: 'destroyChanges', value: false), 
                         string(name: 'selectedDockerImage', value: 'example'), 
-                        string(name: 'environment', value: 'dev')
+                        string(name: 'environment', value: "${environment}")
                         ]
                     }
-
-                  }
                 }
             }
         }
